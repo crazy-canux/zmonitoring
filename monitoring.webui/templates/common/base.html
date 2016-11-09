@@ -1,0 +1,62 @@
+{% extends "common/html_headers.html" %}
+
+{% block content %}
+    <!-- Navbar -->
+    {% block navbar %}
+        {% include "common/_navbar.html" %}
+    {% endblock navbar %}
+
+    <!--[if lt IE 9]>
+    <div id="browser_outdated" class="alert alert-danger">
+      <h3><strong><span class="glyphicon glyphicon-bell"></span> Your browser is not up-to-date !</strong></h2>
+      <p><strong>Please note that we no longer supports Internet Explorer versions below 8.</strong><p>
+      <p>We recommend upgrading to the latest <a href="https://ie.microsoft.com/">Internet Explorer</a> or <a href="https://mozilla.org/firefox/">Firefox</a>.</p>
+      <p>If you are using IE 9 or later, make sure you turn off <a href="http://windows.microsoft.com/en-US/windows7/webpages-look-incorrect-in-Internet-Explorer">"Compatibility View"</a>.</p>
+
+      <p class="alert alert-info">You may experience poor browsing if you continue.</p>
+      <p class="alert alert-success"><strong>Please ask your system administrator to upgrade your browser.</strong></p>
+    </div>
+    <![endif]-->
+
+    <!-- Page content -->
+    {% block page_content %}{% endblock page_content %}
+    <!-- /Page content -->
+{% endblock content %}
+
+{% block footer %}
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        <a href="mailto:dl-itop-monitoring@faurecia.com">
+                            Central Systems / Monitoring &amp; Reporting</a>,
+                        2006-{{ current_year|default:"Present" }}
+                    </p>
+
+                    <p>
+                        <small>optools <a target="_blank"
+                                          href="http://monitoring-dc.app.corp/git/?p=admin/optools.git;a=shortlog;h=refs/heads/master">v{{ PROJECT_VERSION }}</a>
+                        </small>
+                        <br/>
+                        <small>webui <a target="_blank"
+                                          href="http://monitoring-dc.app.corp/git/?p=lib/monitoring.webui.git;a=shortlog;h=refs/heads/master">v{{ WEBUI_VERSION }}</a>
+                        </small>
+                    </p>
+                </div>
+
+                {% block footer_content %}
+                    {% include "common/_footer.html" %}
+                {% endblock footer_content %}
+
+                <div class="col-md-3">
+                    <p>
+                        <a class="pull-right logo-faurecia"
+                           href="http://intranet.faurecia/"
+                           target="_blank"></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock footer %}

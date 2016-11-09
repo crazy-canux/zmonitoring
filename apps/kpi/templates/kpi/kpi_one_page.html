@@ -1,0 +1,287 @@
+{% extends "common/base.html" %}
+{% load cache %}
+
+{% block page_title %}Monitoring Key Indicators{% endblock page_title %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ STATIC_URL }}kpi/js/style.css"/>
+  <link rel="stylesheet" href="{{ STATIC_URL }}kpi/css/base.css"/>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{{ STATIC_URL }}kpi/favicon.ico"/>
+{% endblock extra_css %}
+
+{% block extra_script %}
+  {% cache 28800 charts_data %}
+      <script src="{{ STATIC_URL }}kpi/js/amstock.js"></script>
+      <script src="{{ STATIC_URL }}kpi/js/createGraphs.js"></script>
+      <script language="JavaScript">
+        function affichage_popup(nom_de_la_page, nom_interne_de_la_fenetre) {
+          var expression = /Graphiques.html/g;
+          if (window.location.href.match(expression)) {
+            window.focus();
+            window.resizeTo(900, 800);
+            print();
+          }
+          else {
+            var win = window.open(nom_de_la_page, nom_interne_de_la_fenetre, config = 'height=800, width=900, toolbar=no, menubar=no, scrollbars=no, resizable=0, location=no, directories=no, status=no')
+            win.document.close();
+            win.focus();
+            window.resizeTo(900, 800);
+          }
+        }
+      </script>
+      <script type="text/javascript">
+        var chartDataRecurrentsAlerts = {{ chart_data_recurrents_alerts|safe }},
+        chartDataRecurrentsAlertsWeek = {{ chart_data_recurrents_alerts_week|safe }},
+                chartDataAlerts = {{ chart_data_alerts|safe }},
+                chartDataRequest = {{ chart_data_request|safe }},
+                chartDataNagios = {{ chart_data_nagios|safe }},
+                other = {{ number_others|safe }},
+                others_weeks = {{ number_others_weeks|safe}},
+                chartDataOldestsAlerts = {{ chart_data_oldests_alerts|safe }},
+	            chartFailedServices = {{ chart_failed_services|safe }},
+	            chartCountFailedServices = {{ chart_count_failed_services|safe }},
+	            chartCountOldAlertVsHostDown = {{ chart_count_old_alert_vs_host_down|safe }};
+		</script>
+		{% include "kpi/createFailedAlertByApp.html" %}
+		 <script type="text/javascript">
+        AmCharts.ready(function() {
+          createRequests();
+          createHosts();
+          createEquipements();
+          createAlerts();
+          createRecurrentsAlerts();
+          createRecurrentsAlertsWeek();
+          createOldestsAlerts();
+		  createFailedServices();
+		  createCountFailedServices();
+		  createOldAlertVsHostDown();
+		  createFailedAlertByApp();
+          deleteAmChart();
+          var expression = /Graphiques.html/g;
+          if (window.location.href.match(expression)) {
+            print();
+          }
+        }); 
+
+      </script>
+  {% endcache %}
+{% endblock extra_script %}
+
+{% block page_content %}
+  <div class="jumbotron">
+    <div class="container">
+      <h1>Monitoring Key Indicators</h1>
+
+      <p>This web application provides some statistics about what we do within GIS
+        / Monitoring &amp; Reporting.
+        Check out how many requests we are handling, number of equipments being
+        monitored or the most recurrents alerts.</p>
+
+      <div>
+        <a class="btn btn-primary btn-lg"
+           href="/tracking/projects/optools/wiki/reporting" target="_blank">Learn
+          more</a>
+        <a class="btn btn-info btn-lg" href="/tracking/projects/optools"
+           target="_blank">About Central Systems Tools</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <nav class="navbar navbar-default hideprint affix-top" data-spy="affix" data-offset-top="335" id="overview">
+      <ul class="nav navbar-nav">
+        <li><a href="#redmine"><span class="glyphicon glyphicon-fire"></span> Requests</a></li>
+        <li><a href="#hosts"><span class="glyphicon glyphicon-tasks"></span> Hosts & Services</a></li>
+        <li><a href="#repartition"><span class="glyphicon glyphicon-tasks"></span> Operating System Repartition</a></li>
+        <li><a href="#alerts"><span class="glyphicon glyphicon-exclamation-sign"></span> Alerts</a></li>
+        <li><a href="#recurrentsalerts"><span class="glyphicon glyphicon-exclamation-sign"></span> Recurrents Alerts</a></li>
+        <li><a href="#oldestsalerts"><span class="glyphicon glyphicon-exclamation-sign"></span> Oldests Alerts</a></li>
+		<li><a href="#failedservices"><span class="glyphicon glyphicon-exclamation-sign"></span> Failed Services</a></li>
+        <li class="pull-right">
+          <a href="{% url "apps.kpi.indicateurs.indicateurs" %}?action=print">
+            <span class="glyphicon glyphicon-print"></span> Print
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <p class="pull-right">
+        <small>Last update: {{ today }}</small>
+    </p>
+
+    <section id="redmine">
+        <div class="page-header">
+          {% if perms.kpi.change_kpiredmine %}
+            <a target="_blank" href="{% url "admin:kpi_kpiredmine_changelist" %}"
+               class="pull-right"><i class="glyphicon glyphicon-pencil"></i> Edit</a>{% endif %}
+          <h1>Requests
+            <small>additions &amp; changes</small>
+          </h1>
+        </div>
+        <div class="graph" id="graphRequest"
+             style="width: 100%; height: 800px; margin-bottom: 20px;"></div>
+        <div style="text-align: center; width: 100%; margin-bottom: 50px;"
+             class="hideprint">
+        <h3 style="margin-bottom: 20px;">Quick links</h3>
+          <a class="btn btn-primary" href="/tracking/issues?query_id=4"
+             target="_blank">Opened Requests</a>
+          <a class="btn btn-primary" href="/tracking/issues?query_id=33"
+             target="_blank">Issues closed last 30 days</a>
+        <a class="btn btn-primary" href="/tracking/projects" target="_blank">Projects</a>
+        </div>
+    </section>
+
+    <section id="hosts">
+        <div class="page-header">
+          {% if perms.kpi.change_kpinagios %}
+            <a target="_blank" href="{% url "admin:kpi_kpinagios_changelist" %}"
+               class="pull-right"><i class="glyphicon glyphicon-pencil"></i> Edit</a>{% endif %}
+          <h1>Hosts & Services
+            <small>monitored in Nagios</small>
+          </h1>
+        </div>
+        <div class="graph" id="graphHosts"
+             style="width: 100%; height: 500px; margin-bottom: 20px;"></div>
+        <div style="text-align: center; width: 100%; margin-bottom: 50px;"
+             class="hideprint">
+        <h3 style="margin-bottom: 20px;">Quick links</h3>
+          <a class="btn btn-primary"
+             href="/thruk/cgi-bin/status.cgi?hostgroup=all&style=hostdetail"
+             target="_blank">List all Hosts</a>
+          <a class="btn btn-primary" href="/thruk/cgi-bin/status.cgi?style=detail" target="_blank">List all Services</a>
+    	  <a class="btn btn-primary"
+	         href="/thruk/cgi-bin/status.cgi?nav=&hidesearch=2&hidetop=&dfl_s0_hoststatustypes=15&dfl_s0_servicestatustypes=31&dfl_s0_hostprops=0&dfl_s0_serviceprops=270346&style=hostsummary&dfl_s0_type=hostgroup&dfl_s0_val_pre=&dfl_s0_op=~&dfl_s0_value=%5Eapp_%5B-a-zA-Z0-9%5D%2B%24&dfl_s0_value_sel=5"
+	         target="_blank">List all Apps</a>
+	                  
+      	  <a class="btn btn-primary"
+	         href="/thruk/cgi-bin/status.cgi?dfl_s0_value_sel=5&dfl_s0_servicestatustypes=31&dfl_s0_op=%21%3D&dfl_s0_op=%21%3D&dfl_s0_op=%21%3D&style=hostdetail&dfl_s0_type=hostgroup&dfl_s0_type=hostgroup&dfl_s0_type=hostgroup&dfl_s0_serviceprops=0&hidetop=&dfl_s0_hoststatustypes=15&dfl_s0_val_pre=&dfl_s0_val_pre=&dfl_s0_val_pre=&hidesearch=2&dfl_s0_value=sys_linux&dfl_s0_value=sys_windows&dfl_s0_value=sys_aix&dfl_s0_hostprops=0&nav=&page=1&entries=all"
+	         target="_blank">List all other Hosts</a>
+          <a class="btn btn-primary"
+	         href="/thruk/cgi-bin/status.cgi?nav=&hidesearch=2&hidetop=&dfl_s0_hoststatustypes=4&dfl_s0_servicestatustypes=31&dfl_s0_hostprops=0&dfl_s0_serviceprops=270346&style=hostdetail&update.x=6&update.y=6"
+	         target="_blank">List all Hosts Down</a>
+	         
+        </div>
+    </section>
+
+    <section id="repartition">
+        <div class="page-header">
+          {% if perms.kpi.change_kpinagios %}
+            <a target="_blank" href="{% url "admin:kpi_kpinagios_changelist" %}"
+               class="pull-right"><i class="glyphicon glyphicon-pencil"></i> Edit</a>{% endif %}
+          <h1>Operating System Repartition
+            <small>as seen in Nagios</small>
+          </h1>
+        </div>
+        <div class="graph" id="graphEquipement"
+             style="width: 100%; height: 400px; margin-bottom: 20px;"></div>
+        <div style="text-align: center; width: 100%; margin-bottom: 50px;"
+             class="hideprint">
+        <h3 style="margin-bottom: 20px;">Quick links</h3>
+          <a class="btn btn-primary"
+             href="/thruk/cgi-bin/status.cgi?hostgroup=sys_windows&style=hostdetail"
+             target="_blank">List all Windows</a>
+          <a class="btn btn-primary"
+             href="/thruk/cgi-bin/status.cgi?hostgroup=sys_aix&style=hostdetail"
+             target="_blank">List all Aix</a>
+          <a class="btn btn-primary"
+             href="/thruk/cgi-bin/status.cgi?hostgroup=sys_linux&style=hostdetail"
+             target="_blank">List all Linux</a>
+        </div>
+    </section>
+
+    <section id="alerts">
+        <div class="page-header">
+          {% if perms.kpi.change_countnotifications %}<a target="_blank"
+                                                         href="{% url "admin:kpi_countnotifications_changelist" %}"
+                                                         class="pull-right">
+            <i class="glyphicon glyphicon-pencil"></i> Edit</a>{% endif %}
+          <h1>Alerts
+            <small>triggered by Nagios to Omnibus</small>
+          </h1>
+        </div>
+        <div class="graph" id="graphAlerts"
+             style="width: 100%; height: 400px; margin-bottom: 20px;"></div>
+        <div style="text-align: center; width: 100%; margin-bottom: 50px;"
+             class="hideprint">
+        <h3 style="margin-bottom: 20px;">Quick links</h3>
+          <a class="btn btn-primary" href="/thruk/cgi-bin/status.cgi?dfl_s0_value_sel=5&dfl_s0_servicestatustypes=29&dfl_s0_op=!~&dfl_s1_val_pre=&dfl_s1_val_pre=&dfl_s1_op=%3D&dfl_s1_op=%3E%3D&dfl_s0_val_pre=&hidesearch=0&dfl_s0_hostprops=8202&dfl_s1_hoststatustypes=15&nav=&dfl_s1_value_sel=5&dfl_s1_type=hostgroup&dfl_s1_type=duration&dfl_s1_hostprops=8202&style=detail&dfl_s0_type=hostgroup&dfl_s0_serviceprops=270346&dfl_s1_value=app_insequence&dfl_s1_value=15m&hidetop=&dfl_s0_hoststatustypes=15&dfl_s1_servicestatustypes=29&dfl_s0_value=app_insequence&dfl_s1_serviceprops=270346&reload_nav=1"
+             target="_blank">Alert Event</a>
+      <a class="btn btn-primary"
+         href="/thruk/cgi-bin/status.cgi?dfl_s0_value_sel=5&dfl_s0_servicestatustypes=29&dfl_s0_op=!~&dfl_s1_val_pre=&dfl_s1_val_pre=&dfl_s1_op=%3D&dfl_s1_op=%3E%3D&dfl_s0_val_pre=&hidesearch=0&dfl_s0_hostprops=8202&dfl_s1_hoststatustypes=15&nav=&dfl_s1_value_sel=5&dfl_s1_type=hostgroup&dfl_s1_type=duration&dfl_s1_hostprops=8202&style=detail&dfl_s0_type=hostgroup&dfl_s0_serviceprops=270346&dfl_s1_value=app_insequence&dfl_s1_value=15m&hidetop=&dfl_s0_hoststatustypes=15&dfl_s1_servicestatustypes=29&dfl_s0_value=app_insequence&dfl_s1_serviceprops=270346"
+         target="_blank">Active Event</a>
+                  </div>
+    </section>
+
+    <section id="recurrentsalerts">
+      <div class="page-header">
+          <h1>Recurrents Alerts <small>(only hard state per services with notifications enabled and not in downtime)</small> </h1>
+          <hr />
+          {% if perms.kpi.change_recurrentalerts %}<a target="_blank" href="{% url "admin:kpi_recurrentalerts_changelist" %}" class="pull-right"><i class="glyphicon glyphicon-pencil"></i> Edit</a>{% endif %} <h4 style="margin-left: 15px">on the last 31 days</h4>
+          <hr />
+          <div class="graph" id="graphRecurrentsAlerts"></div>
+
+          {% if perms.kpi.change_recurrentalerts %}<a target="_blank" href="{% url "admin:kpi_recurrentalertsweek_changelist" %}" class="pull-right"><i class="glyphicon glyphicon-pencil"></i> Edit</a>{% endif %} <h4 style="margin-left: 15px">on the last 7 days</h4>
+          <hr />
+          <div class="graph" id="graphRecurrentsAlertsWeek"></div>
+      </div>
+    </section>
+
+    <section id="oldestsalerts">
+      <div class="page-header">
+        {% if perms.kpi.change_oldestalerts %}<a target="_blank"
+                                                 href="{% url "admin:kpi_oldestalerts_changelist" %}"
+                                                 class="pull-right">
+          <i class="glyphicon glyphicon-pencil"></i> Edit</a>{% endif %}
+        <h1>Oldests Alerts
+          <small>active in Nagios (with notifications enabled and not in downtime)</small>
+        </h1>
+      </div>
+      <div class="graph" id="graphOldestsAlerts"></div>
+	</section>
+
+	<section id="failedservices">
+		<div class="page-header">
+			<h1>Failed Services <small> with notifications enabled and not in downtime (data collected every day at 3:00 CET)</small> </h1>
+			<hr />
+			{% if perms.kpi.change_oldestalerts %}<a target="_blank" href="{% url "admin:kpi_failedservices_changelist" %}" class="pull-right"><i class="icon-pencil"></i> Edit</a>{% endif %} <h4 style="margin-left: 15px">Failed Services repartition per status</h4>
+			<hr />
+			<div class="graph" id="graphFailed"></div>
+			 <div style="text-align: center; width: 100%; margin-bottom: 50px;"
+             class="hideprint">
+			<a class="btn btn-primary"
+         href="/thruk/cgi-bin/status.cgi?dfl_s0_servicestatustypes=4&style=detail&sorttype=2&dfl_s0_serviceprops=8194&hidetop=&dfl_s0_hoststatustypes=15&hidesearch=2&dfl_s0_serviceprop=2&dfl_s0_serviceprop=8192&dfl_s0_hostprops=0&sortoption=6&nav="
+         target="_blank">Warning</a>
+         
+         <a class="btn btn-primary"
+         href="/thruk/cgi-bin/status.cgi?dfl_s0_servicestatustypes=16&style=detail&sorttype=2&dfl_s0_serviceprops=8194&dfl_s0_servicestatustype=16&hidetop=&dfl_s0_hoststatustypes=15&hidesearch=2&dfl_s0_hostprops=0&sortoption=6&nav="
+         target="_blank">Critical</a>
+         
+         <a class="btn btn-primary"
+         href="/thruk/cgi-bin/status.cgi?dfl_s0_servicestatustypes=8&style=detail&sorttype=2&dfl_s0_serviceprops=8194&dfl_s0_servicestatustype=8&hidetop=&dfl_s0_hoststatustypes=15&hidesearch=2&dfl_s0_hostprops=0&sortoption=6&nav="
+         target="_blank">Unknown</a>
+                 <a class="btn btn-primary"
+         href="/thruk/cgi-bin/status.cgi?dfl_s0_servicestatustypes=28&style=detail&sorttype=2&dfl_s0_serviceprops=8194&hidetop=&dfl_s0_hoststatustypes=15&hidesearch=2&dfl_s0_hostprops=0&sortoption=6&nav="
+         target="_blank">All</a>
+                </div>  </div>
+
+			{% if perms.kpi.change_oldestalerts %}<a target="_blank" href="{% url "admin:kpi_countfailedservices_changelist" %}" class="pull-right"><i class="icon-pencil"></i> Edit</a>{% endif %} <h4 style="margin-left: 15px">Failed Services repartition per duration</h4>
+			<hr />
+			<div class="graph" id="graphCountFailed"></div>
+			<hr />
+			{% if perms.kpi.change_oldestalerts %}<a target="_blank" href="{% url "admin:kpi_countfailedservices_changelist" %}" class="pull-right"><i class="icon-pencil"></i> Edit</a>{% endif %} <h4 style="margin-left: 15px">Oldest Alerts vs Hosts Down</h4>
+			<hr />
+			<div class="graph" id="graphOldAlertVsHostDown"></div>
+			<hr />
+			{% if perms.kpi.change_oldestalerts %}<a target="_blank" href="{% url "admin:kpi_countfailedservicesbyapps_changelist" %}" class="pull-right"><i class="icon-pencil"></i> Edit</a>{% endif %} <h4 style="margin-left: 15px">Number of alerts per application</h4>
+			<hr />
+			<div id="chartApp" style="width: 100%; height: 395px;"></div>
+		</div>
+    </section>
+  </div>
+{% endblock page_content %}
+
+{% block extra_footer %}
+  <p>Graphs generated using <a href="http://www.amcharts.com/" target="_blank">Amcharts</a>
+    Javascript library.</p>
+{% endblock extra_footer %}

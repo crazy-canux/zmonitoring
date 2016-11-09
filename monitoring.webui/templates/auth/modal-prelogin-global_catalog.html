@@ -1,0 +1,21 @@
+{% block modal-prelogin %}
+<div class="modal fade" id="modal-prelogin-message">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Authentication</h4>
+            </div>
+            <div class="modal-body">
+                <p>Log in using your normal user account, login are of the form <em>login@corp</em>.</p>
+                <div class="alert alert-info"><strong>Note:</strong> The domain should always be <em>corp</em> for normal user accounts.</div>
+                <h5>Example</h5>
+                <p>My user account is <em>besancon</em> so I will log using <em>besancon@corp</em>. This is not related to the CORP administrative account !</p>
+            </div>
+            <div class="modal-footer">
+                <a href="{% url "login" %}" class="btn btn-primary">Proceed to login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

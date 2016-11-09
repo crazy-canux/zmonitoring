@@ -1,0 +1,29 @@
+{% extends "common/base.html" %}
+
+{% block extra_meta %}
+{% if origin %}<meta http-equiv="refresh" content="60; url={{ origin }}">{% endif %}
+{% endblock extra_meta %}
+
+{% block content %}
+<div class"container">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="jumbotron">
+        {% block maintenance-content %}{% endblock maintenance-content %}
+        <p><a href="{% url "index" %}" class="btn btn-default btn-lg">Return on portal</a></p>
+      </div>
+    </div>
+  </div>
+  {% if origin %}
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <p>This page will refresh automatically, if not click on 
+      <a href="{{ origin }}">this link</a> to return back to the application.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock footer %}

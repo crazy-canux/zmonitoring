@@ -1,0 +1,3 @@
+# Internal dependencies
+git+http://monitoring-dc.app.corp/git/lib/monitoring.webui.git@master#egg=monitoring.webui
+git+http://monitoring-dc.app.corp/git/lib/monitoring.fabric.git@master#egg=monitoring.fabric

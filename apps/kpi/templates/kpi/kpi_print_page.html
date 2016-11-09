@@ -1,0 +1,284 @@
+{% extends "common/base.html" %}
+
+{% block footer %}{% endblock footer %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ STATIC_URL }}kpi/js/style.css"/>
+  <link rel="stylesheet" href="{{ STATIC_URL }}kpi/css/base.css"/>
+  <link rel="stylesheet" href="{{ STATIC_URL }}kpi/css/print.css"/>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{{ STATIC_URL }}kpi/favicon.ico"/>
+{% endblock extra_css %}
+
+{% block extra_script %}
+  <script src="{{ STATIC_URL }}kpi/js/amstock.js"></script>
+  <script src="{{ STATIC_URL }}kpi/js/createGraphs.js"></script>
+  <script type="text/javascript">
+	var chartDataRecurrentsAlerts = {{ chart_data_recurrents_alerts|safe }},
+	chartDataRecurrentsAlertsWeek = {{ chart_data_recurrents_alerts_week|safe }},
+            chartDataAlerts = {{ chart_data_alerts|safe }},
+            chartDataRequest = {{ chart_data_request|safe }},
+            chartDataNagios = {{ chart_data_nagios|safe }},
+            other = {{ number_others|safe }},
+	others_weeks = {{ number_others_weeks|safe}},
+    chartDataOldestsAlerts = {{ chart_data_oldests_alerts|safe }},
+	chartFailedServices = {{ chart_failed_services|safe }},
+	chartCountFailedServices = {{ chart_count_failed_services|safe }},
+	chartCountOldAlertVsHostDown = {{ chart_count_old_alert_vs_host_down|safe }};
+	
+	
+		function createFailedAlertByApp() {
+		var categoryAxesSettings;
+		chart = new AmCharts.AmStockChart();
+		chart.pathToImages = "http://www.amcharts.com/lib/3/images/"; 
+		{{ data_set | safe }}
+
+		// PANELS ///////////////////////////////////////////
+
+		// categoryAxesSettings
+		categoryAxesSettings = new AmCharts.CategoryAxesSettings();
+		categoryAxesSettings.groupToPeriods = ["DD", "MM"];
+		categoryAxesSettings.minPeriod = "DD";
+		chart.categoryAxesSettings = categoryAxesSettings;
+
+		// first stock panel
+		var stockPanel1 = new AmCharts.StockPanel();
+		stockPanel1.showCategoryAxis = true;
+		stockPanel1.title = "Value";
+		stockPanel1.percentHeight = 70;
+
+		// graph of first stock panel
+		var graph1 = new AmCharts.StockGraph();
+		graph1.valueField = "value";
+		graph1.comparable = true;
+		graph1.compareField = "value";
+		graph1.bullet = "round";
+		graph1.bulletBorderColor = "#FFFFFF";
+		graph1.bulletBorderAlpha = 1;
+		graph1.balloonText = "[[title]]:[[value]]";
+		graph1.compareGraphBalloonText = "[[title]]:[[value]]";
+		graph1.compareGraphBullet = "round";
+		graph1.compareGraphBulletBorderColor = "#FFFFFF";
+		graph1.compareGraphBulletBorderAlpha = 1;
+		graph1.periodValue = "Sum";
+
+		stockPanel1.addStockGraph(graph1);
+
+		// create stock legend
+		var stockLegend1 = new AmCharts.StockLegend();
+		stockLegend1.periodValueTextRegular = "[[value.close]]";
+		stockPanel1.stockLegend = stockLegend1;
+
+		// no calculate percents
+		stockPanel1.recalculateToPercents = "never";
+
+		// set panels to the chart
+		chart.panels = [stockPanel1];
+
+		// OTHER SETTINGS ////////////////////////////////////
+		var sbsettings = new AmCharts.ChartScrollbarSettings();
+		sbsettings.graph = graph1;
+		chart.chartScrollbarSettings = sbsettings;
+
+		// CURSOR
+		var cursorSettings = new AmCharts.ChartCursorSettings();
+		cursorSettings.valueBalloonsEnabled = true;
+		chart.chartCursorSettings = cursorSettings;
+
+		// PERIOD SELECTOR ///////////////////////////////////
+		var periodSelector = new AmCharts.PeriodSelector();
+		//periodSelector.position = "left";
+		periodSelector.periods = [{
+			period : "DD",
+			count : 10,
+			label : "10 days"
+		}, {
+			period : "MM",
+			selected : true,
+			count : 1,
+			label : "1 month"
+		}, {
+			period : "YYYY",
+			count : 1,
+			label : "1 year"
+		}, {
+			period : "YTD",
+			label : "YTD"
+		}, {
+			period : "MAX",
+			label : "MAX"
+		}];
+		chart.periodSelector = periodSelector;
+
+		// modify layout
+		function update_select(){
+			$('.amChartsDataSetSelector').html($('.amChartsCompareList'));
+			$('.amChartsCompareList').css('max-height', '391px');
+			for (var i = 0; i<chart.dataSets.length; i++) {
+				if(i>0){
+						$($($('.amChartsCompareList>div')[i-1]).find('div')[1]).text($($($('.amChartsCompareList>div')[i-1]).find('div')[1]).text()+" "+chart.dataSets[i].dataProvider[chart.dataSets[i].dataProvider.length-1].nb_app);
+				}
+			}
+		}
+		
+		// DATA SET SELECTOR
+		var dataSetSelector = new AmCharts.DataSetSelector();
+		dataSetSelector.position = "left";
+		dataSetSelector.selectText = "";
+		dataSetSelector.compareText = "Apps: ";
+		dataSetSelector.addListener("dataSetCompared",update_select);
+		dataSetSelector.addListener("dataSetUncompared",update_select);
+		chart.dataSetSelector = dataSetSelector;
+		
+		chart.write('chartApp');
+		for (var i = 0; i<chart.dataSets.length; i++) {
+				if(i>0){
+					if(chart.dataSets[i].dataProvider[0].app=="metis"||chart.dataSets[i].dataProvider[0].app=="edi"||chart.dataSets[i].dataProvider[0].app=="fcs"||chart.dataSets[i].dataProvider[0].app=="pdm")
+						$($('.amChartsCompareList>div')[i-1]).click();
+				
+				}
+		}
+		$($('#chartApp>div')[0]).remove();
+		$($('#chartApp>div')[0]).css('padding-left','0px');
+		$($('#chartApp>div')[0]).css('width', '606px');
+		
+		
+		
+		
+		
+	}
+
+	
+	AmCharts.ready(function() {
+      createRequests();
+      createHosts();
+      createEquipements();
+      createAlerts();
+      createRecurrentsAlerts();
+	  createRecurrentsAlertsWeek();
+      createOldestsAlerts();
+      createFailedServices();
+	  createCountFailedServices();
+	  createOldAlertVsHostDown();
+	  createFailedAlertByApp();
+      deleteAmChart();
+      var expression = /Graphiques.html/g;
+      if (window.location.href.match(expression)) {
+        print();
+      }
+	}); 
+  </script>
+{% endblock extra_script %}
+
+{% block content %}
+  <div class="well row print-intro hide-print">
+    <div class="col-md-12"><h2>Prepare your graphs then print this page.</h2></div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="pull-right">
+          <a class="btn btn-lg btn-primary" href="javascript:print();">Print
+            this page</a>
+          <a class="btn btn-lg btn-info"
+             href="{% url "apps.kpi.indicateurs.indicateurs" %}">Return back</a>
+        </div>
+      </div>
+	</div>
+  </div>
+
+  <hr class="hide-print">
+
+  <p class="pull-right">
+    <small>Last update: {{ today }}</small>
+  </p>
+
+  <h1>Monitoring & Reporting KPI</h1>
+  <h4>http://monitoring-dc.app.corp/</h4>
+
+  <section id="Redmine">
+    <div class="page-header">
+      <h1>Requests
+        <small>additions &amp; changes</small>
+      </h1>
+      <div class="graph" id="graphRequest"
+           style="width: 100%; height: 800px; margin-bottom: 20px;"></div>
+    </div>
+  </section>
+
+  <section id="Hosts">
+    <div class="page-header">
+      <h1>Hosts & Services
+        <small>monitored in Nagios</small>
+      </h1>
+      <div class="graph" id="graphHosts"
+           style="width: 100%; height: 500px; margin-bottom: 20px;"></div>
+    </div>
+  </section>
+
+  <section id="Repartition">
+    <div class="page-header">
+      <h1>Operating System Repartition
+        <small>as seen in Nagios</small>
+      </h1>
+      <div class="graph" id="graphEquipement"
+           style="width: 100%; height: 400px; margin-bottom: 20px;"></div>
+    </div>
+  </section>
+
+  <section style="margin-top:150px" id="Alerts">
+    <div class="page-header">
+      <h1>Alerts
+        <small>triggered by Nagios to Omnibus</small>
+      </h1>
+      <div class="graph" id="graphAlerts"
+           style="width: 100%; height: 400px; margin-bottom: 20px;"></div>
+    </div>
+  </section>
+
+  <section id="RecurrentsAlerts">
+    <div class="page-header">
+		<h1>Recurrents Alerts <small>(only hard state per services with notifications enabled and not in downtime)</small></h1>
+		<div>
+			<h4 style="margin-left: 15px">on the last 31 days</h4>
+			<hr />
+      <div class="graph" id="graphRecurrentsAlerts"></div>
+    </div>
+		<div>
+			<h4 style="margin-left: 15px">on the last 7 days</h4>
+			<hr />
+			<div class="graph" id="graphRecurrentsAlertsWeek"></div>
+		</div>
+	</div>
+  </section>
+
+  <section id="OldestsAlerts">
+    <div class="page-header">
+      <h1>Oldests Alerts
+        <small>active in Nagios (with notifications enabled and not in downtime)</small>
+      </h1>
+      <div id="graphOldestsAlerts"></div>
+    </div>
+  </section>
+
+  <section id="FailedServices">
+	<div class="page-header" >
+		<h1>Failed Services <small> with notifications enabled and not in downtime (data collected every day at 3:00 CET)</small></h1>
+		<hr />
+		<hr />
+		<h4 style="margin-left: 15px">Failed Services repartition per status</h4>
+		<div class="graph" id="graphFailed"></div>
+
+		<hr />
+		<h4 style="margin-left: 15px">Failed Services repartition per duration</h4>
+		<div class="graph" id="graphCountFailed"></div>
+		<hr />
+		<div class="graph" id="graphOldAlertVsHostDown" style="padding-bottom: 100px"></div>
+		<hr />
+		<div class="graph" id="chartdiv" style="padding-bottom: 10px"></div>
+		
+		<h5>Number of alerts per application</h5>
+		<div id="chartApp" style="width: 100%; height: 395px;"></div>
+		</div>
+		
+	</div>
+  </section>
+{% endblock content %}

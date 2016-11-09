@@ -1,0 +1,35 @@
+{%  extends "common/base.html" %}
+
+{%  block content %}
+<div class="container">
+    <div class="page-header">
+        <h2>Central Monitoring Alert <small>Acknowledge an alert</small></h2>
+    </div>
+
+    <div class="alert alert-block alert-success">
+        <h4 class="alert-heading">Successfully acknowledged !</h4>
+        <p><br></p>
+        <a href="#modal-details" data-toggle="modal" class="btn">View details</a>    
+    </div>
+
+    <div class="modal fade hide" id="modal-details">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>Details about this alert</h3>
+        </div>
+        <div class="modal-body">
+            <dl class="dl-horizontal">
+                <dt>Author</dt><dd>{{ author }}</dd>
+                <dt>Hostname</dt><dd>{{ hostname }}</dd>
+                {% if service_description %}
+                <dt>Service</dt><dd>{{ service_description }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+</div>
+{%  endblock %}

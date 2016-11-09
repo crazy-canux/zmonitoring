@@ -1,0 +1,72 @@
+/* CSS for reporting web app */
+
+/* Overrides some bootstrap stuff doing shit on the page */
+*, *:before, *:after {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+}
+
+.navbar.affix {
+    top: 50px;
+    right: 0;
+    left: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,.25);
+}
+
+/* Base */
+section {
+    padding-top: 100px;
+}
+
+/* Graphs */
+.graph {
+    padding-top: 20px;
+}
+
+div#graphRecurrentsAlerts {
+    height: 500px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+div#graphRecurrentsAlertsWeek{                         
+    height: 500px;                                                               
+    margin-bottom: 10px;                                                         
+    width: 100%;                                                                 
+}
+
+div#graphOldestsAlerts {
+    height: 500px;
+    width: 100%;
+    padding-top: 0px;
+}
+
+
+div#graphFailed {
+    height: 500px;
+    width: 100%;
+    padding-top: 0px;
+}
+
+div#graphCountFailed {
+    height: 500px;
+    width: 100%;
+    padding-top: 0px;
+}
+
+div#graphOldAlertVsHostDown {
+    height: 500px;
+    width: 100%;
+    padding-top: 0px;
+}
+
+div#chartApp {
+    height: 700px;
+    width: 100%;
+    padding-top: 0px;
+    margin-bottom: 200px;
+    
+}
+
+

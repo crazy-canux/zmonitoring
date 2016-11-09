@@ -1,0 +1,95 @@
+{% extends "common/base.html" %}
+
+{% block extra_css %}
+  <link href="{{ STATIC_URL }}kb/css/kb.css" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block page_title %}Manage KB namespace{% endblock page_title %}
+
+{% block page_content %}
+  {% if user.is_authenticated and not user_is_helpdesk %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Discover KB Management system</h1>
+
+        <p>This new system handles the procedure creation and organization.
+          It was done to introduce a way to create more general procedure,
+          with the possibility to create specific ones like before.</p>
+
+        <a href="http://monitoring-dc.app.corp/doc/kb/index.html"
+             class="btn btn-primary btn-lg" target="_blank"><i
+                  class="glyphicon glyphicon-question-sign"></i> Learn how to use it</a>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Procedure management
+        <small>for <strong>{{ kb_requested.namespace }}</strong></small>
+      </h1>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        {% if not kb_found %}
+          <h4 class="alert alert-danger">The requested <a
+                  href="javascript:void(0);" rel="tooltip"
+                  title="Procedure">KB</a>
+            does not contains any valid procedure within all namespaces !</h4>
+        {% else %}
+          <h4 class="alert alert-warning">The requested <a
+                  href="javascript:void(0);" rel="tooltip"
+                  title="Procedure">KB</a>
+            does not exist but there are some at others levels !</h4>
+        {% endif %}
+
+        {% if user.is_authenticated and not user_is_helpdesk %}
+          <p>It appears that you are responsible to create procedures for
+            alerts. You are invited to create the
+            procedure now, please select the namespace where you want to edit
+            the procedure.</p>
+
+          <p>More you go to the right, more precise will be your procedure. More
+            you go to the left, more general will be your procedure.</p>
+
+          <ul class="kb-namespace-select">
+            {% for kb in procedure_pages %}
+              {% if forloop.first %}{{ kb.get_name }}{% else %}
+                <span class="dropdown">
+                <a class='{% if not kb.is_written %}kb-link-missing {% endif %}dropdown-toggle'
+                   id="drop_{{ kb.namespace }}" role="button"
+                   data-toggle="dropdown" href="#">{{ kb.get_name }}</a><ul
+                        class="dropdown-menu" role="menu"
+                        aria-labelledby="drop_{{ kb.namespace }}">
+                  <li><a tabindex="-1" href="{{ kb.get_edit_url }}">Edit</a>
+                  </li>
+                  {% if kb.is_written %}
+                    <li><a tabindex="-1" href="{{ kb.get_read_url }}">Read</a>
+                    </li>{% endif %}</ul></span>{% endif %}
+              {% if not forloop.last %}
+                <span class="divider">:</span>
+              {% endif %}
+            {% endfor %}
+          </ul>
+
+          <h4>Legend</h4>
+          <ul>
+            <li><strong>namespace</strong> - Cannot be created, used as a
+              folder.
+            </li>
+            <li><strong class="kb-link-missing">namespace</strong> - Missing,
+              should be created.
+            </li>
+            <li><strong><a>namespace</a></strong> - Link to procedure exist.
+            </li>
+          </ul>
+        {% else %}
+          <p>Please get in contact with the application or system responsibles
+            in order to make them create the
+            procedure to handle this alert.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock page_content %}

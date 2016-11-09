@@ -1,0 +1,4 @@
+# Setup dependencies for production
+#
+-r internal.deps
+-r third_party.deps

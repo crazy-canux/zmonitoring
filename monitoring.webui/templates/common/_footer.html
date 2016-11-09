@@ -1,0 +1,24 @@
+{% comment %}
+This is the default Footer content.
+Overrides block "footer" if you want to manage your own footer.
+Overrides block "footer_content" if you want to only change the middle part of the footer.
+{% endcomment %}
+
+<div class="col-md-5">
+    <p>Propulsed by <a
+            href="https://www.djangoproject.com/"
+            rel="tooltip"
+            title="Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design."
+            target="_blank">Django</a> & <a
+            href="http://www.python.org/" rel="tooltip"
+            title="Python is a programming language that lets you work more quickly and integrate your systems more effectively."
+            target="_blank">Python</a>.</p>
+
+    <p>Presented with <a
+            href="http://twitter.github.com/bootstrap/"
+            rel="tooltip"
+            title="Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development."
+            target="_blank">Twitter
+        Bootstrap</a> HTML5/CSS3 framework.</p>
+    {% block extra_footer %}{% endblock extra_footer %}
+</div>

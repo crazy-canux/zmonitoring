@@ -1,0 +1,90 @@
+/*
+# Copyright (C) Faurecia <http://www.faurecia.com/>
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+# OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+/* Common CSS definitions */
+body {
+    padding-top: 50px;
+}
+
+footer {
+    color: rgb(200, 200, 200);
+    background-color: rgb(90, 120, 190);
+    margin-top: 100px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    border-top: 1px solid #e5e5e5;
+}
+footer a {
+    color: white;
+}
+
+footer a.logo-faurecia {
+    background: url("img/logo_faurecia.png") no-repeat;
+    width: 150px;
+    height: 43px;
+}
+
+.page-header {
+    border-bottom: 1px solid rgb(219, 223, 230);
+}
+
+#browser_outdated {
+    position: fixed;
+    width: 500px;
+    bottom: 0px;
+    right: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,.35);
+    z-index: 1000;
+}
+#browser_outdated h3 {
+    font-variant: small-caps;
+    text-align: center;
+}
+
+.jumbotron {
+    color: white;
+    background-color: rgb(70, 160, 200);
+}
+
+.jumbotron p>a {
+    color: rgb(36, 43, 112);
+}
+
+/*
+================================================================================
+ NAVBAR
+================================================================================
+*/
+#dropdown_profile {
+    padding: 4px;
+    width: 300px;
+}
+
+/*
+================================================================================
+ POSITIONS
+================================================================================
+*/
+
+.align-center {
+    text-align: center;
+}

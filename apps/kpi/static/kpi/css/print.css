@@ -1,0 +1,42 @@
+/* CSS for reporting web app print */
+
+/* Overrides some bootstrap stuff doing shit on the page */
+*, *:before, *:after {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+}
+
+body {
+    padding-top: 0;
+    width: 800px;
+    background: white;
+}
+
+section {
+    padding-top: 5px;
+}
+
+div#graphRecurrentsAlerts {
+    height: 400px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.print-intro {
+    padding: 15px 35px 15px 35px;
+}
+
+@media print {
+    section#Redmine {
+        margin-top: 50px;
+    }
+
+    section#Redmine, section#Procedures, section#Alerts {
+        page-break-after: always;
+    }
+    
+    .hide-print {
+        display: none;
+    }
+}

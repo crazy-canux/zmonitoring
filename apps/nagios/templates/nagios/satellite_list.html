@@ -1,0 +1,112 @@
+{% extends "common/base.html" %}
+
+{% block page_title %}List of Monitoring systems{% endblock page_title %}
+
+{% block page_content %}
+<div class="container">
+	<div class="page-header" xmlns="http://www.w3.org/1999/html">
+	    <h1>Monitoring Systems <small>enabled in production</small></h1>
+	</div>
+
+	<p>This is the list of monitoring systems (aka Nagios Satellites) that are performing checks on monitored equipments.
+		You will find the full list of systems enabled in production and the network ports that should be configured on firewalls.</p>
+
+	<p>There is also a <em>web api</em> that permits to retrieve the details about satellites to be used in your scripts.</p>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="page-header">
+				<h3>Nagios Satellites <small>enabled in production</small></h3>
+			</div>
+
+			{% if systems_list %}
+				<table class="table table-hover table-condensed">
+				    <thead>
+				        <tr>
+				            <th>Satellite</th>
+				            <th>Gearman</th>
+				            <th>Alias</th>
+				            <th>Hostname</th>
+				            <th>IP Address</th>
+                            <th></th>
+				        </tr>
+				    </thead>
+				    <tbody>
+				        {% for sat in systems_list %}
+                        <tr class="{% if sat.active %}success{% else %}warning{% endif %}">
+                            <td><strong>{{ sat.name }}</strong></td>
+                            <td>{% if sat.is_gearman %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-ban-circle"></span>{% endif %}</td>
+				            <td>{{ sat.alias }}</td>
+				            <td>{{ sat.fqdn }}</td>
+				            <td>{{ sat.ip_address }}</td>
+					        {% if perms.nagios.change_satellite %}<td><a target="_blank" title="Edit" href="{% url "admin:nagios_satellite_change" sat.id %}"><span class="glyphicon glyphicon-pencil"></span></a></td>{% endif %}
+				        </tr>
+				        {% endfor %}
+				    </tbody>
+				</table>
+			{% else %}
+				<p>No satellite configured.</p>
+			{% endif %}
+
+			<p class="pull-right">{% if perms.nagios.add_satellite %}<small><a target="_blank" href="{% url "admin:nagios_satellite_add" %}"><span class="glyphicon glyphicon-plus"></span> Add a new satellite</a></small>{% endif %}</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="page-header">
+				<h3>Network ports <small>allow access from satellites to monitored equipments</small></h3>
+			</div>
+
+			{% if ports %}
+				<table class="table table-hover table-condensed">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Protocol</th>
+						<th>Port</th>
+                        <th></th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for port in ports %}
+						<tr>
+							<td>{{ port.name }}</td>
+							<td>{{ port.description }}</td>
+							<td>{{ port.protocol }}</td>
+							<td>{% if port.end_port %}{{ port.begin_port }} - {{ port.end_port }}{% else %}{{ port.begin_port }}{% endif %}</td>
+							{% if perms.nagios.change_securityport %}<td><a target="_blank" title="Edit" href="{% url "admin:nagios_securityport_change" port.id %}"><span class="glyphicon glyphicon-pencil"></span></a></td>{% endif %}
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			{% else %}
+				<p>No port configured.</p>
+			{%  endif %}
+
+			<p class="pull-right">{% if perms.nagios.add_securityport %}<small><a target="_blank" href="{% url "admin:nagios_securityport_add" %}"><span class="glyphicon glyphicon-plus"></span> Register new port</a></small>{% endif %}</p>
+			<div class="clearfix"></div>
+
+			<p>You should pay attention to open the following ports on firewall in order to authorize satellites to query
+				monitored equipments.</p>
+			<p>Extra ports could be required for database connections, etc... this is on demand.</p>
+		</div>
+	</div>
+
+    <div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="page-header">
+				<h3>Web API <small>use this in scripts</small></h3>
+			</div>
+
+			<p>Use the following Export URLs to have the list of satellites as JSON or CSV:</p>
+
+			<ul>
+				<li><strong>JSON</strong>: <code>{{ base_url }}{% url "satellites_export" format='json' %}</code></li>
+				<li><strong>CSV</strong>: <code>{{ base_url }}{% url "satellites_export" format='csv' %}</code></li>
+			</ul>
+		</div>
+    </div>
+</div>
+{% endblock %}

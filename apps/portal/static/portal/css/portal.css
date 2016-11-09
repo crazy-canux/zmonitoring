@@ -1,0 +1,27 @@
+/* Portal app CSS */
+
+/* Jumbotron ta gueule ! */
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.thumbnail {
+    min-height: 320px;
+    width: 360px;
+    -webkit-transform: scale(1,1);
+    -webkit-transition-timing-function: ease-out;
+    -webkit-transition-duration: 250ms;
+    -moz-transform: scale(1,1);
+    -moz-transition-timing-function: ease-out;
+    -moz-transition-duration: 250ms;
+}
+
+.thumbnail:hover {
+    -webkit-transform: scale(1.05,1.07);
+    -webkit-transition-timing-function: ease-out;
+    -webkit-transition-duration: 250ms;
+    -moz-transform: scale(1.05,1.07);
+    -moz-transition-timing-function: ease-out;
+    -moz-transition-duration: 250ms;
+}

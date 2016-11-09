@@ -1,0 +1,35 @@
+{% extends "common/base.html" %}
+
+{% load gravatar %}
+{% load crispy_forms_tags %}
+
+{% block page_title %}Edit your profile data{% endblock page_title %}
+
+{% block page_content %}
+    <div class="container">
+        <div class="page-header">
+            <h1>Edit your user profile</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10">
+                <h5>Provides some information about you.</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% crispy form form.helper %}
+            </div>
+            {% if request.user.email %}
+                <div class="col-md-2">
+                    {% gravatar_img_for_email request.user.email 170 extra_style="img-polaroid" %}
+                    <div class="align-center"><a target="_blank"
+                                                 href="http://www.gravatar.com/">Customize</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock page_content %}
+
+{% block footer %}{% endblock footer %}
