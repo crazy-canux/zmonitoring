@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) Faurecia <http://www.faurecia.com/>
+# Copyright (C) Canux CHENG <canuxcheng@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -32,8 +32,7 @@ TEMPLATE_DEBUG = DEBUG
 
 # Contacts
 ADMINS = (
-    ('Mohamed CHERROUD',    'mohamed.cherroud-ext@faurecia.com'),
-    ('Patrick BAILAT',      'patrick.bailat-ext@faurecia.com'),
+    ('Canux CHENG',    'canuxcheng@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -247,7 +246,7 @@ if DEBUG:
     }
 
     # Dokuwiki config
-    DOKUWIKI_BASE_URL = 'http://monitoring-dc.app.corp/kb'
+    DOKUWIKI_BASE_URL = 'http://canuxcheng.com/kb'
     DOKUWIKI_PAGES_DIR = os.path.join(PROJECT_PATH, 'var/pages')
     DOKUWIKI_META_DIR = os.path.join(PROJECT_PATH, 'var/meta')
 

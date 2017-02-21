@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) Faurecia <http://www.faurecia.com/>
+# Copyright (C) Canux CHENG <canuxcheng@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -156,7 +156,7 @@ def send_passive(request):
      -d service=CPU \
      -d status=1 \
      -d message="Test TRAP HTTP" \
-     http://monitoring-dc.app.corp/optools/nagios/passive/
+     http://canuxcheng.com/optools/nagios/passive/
     """
     # Get the logger for this view
     logger.info('-------------------------------')

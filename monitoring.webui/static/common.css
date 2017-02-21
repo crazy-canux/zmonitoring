@@ -1,5 +1,5 @@
 /*
-# Copyright (C) Faurecia <http://www.faurecia.com/>
+# Copyright (C) Canux CHENG <canuxcheng@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -37,8 +37,8 @@ footer a {
     color: white;
 }
 
-footer a.logo-faurecia {
-    background: url("img/logo_faurecia.png") no-repeat;
+footer a.logo-canux {
+    background: url("img/logo_canux.png") no-repeat;
     width: 150px;
     height: 43px;
 }

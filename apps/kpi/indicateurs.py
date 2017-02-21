@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) Faurecia <http://www.faurecia.com/>
+# Copyright (C) Canux CHENG <canuxcheng@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -132,7 +132,7 @@ def chart_red():
         lifetime_high = kpi.requests_lifetime_high / 3600
         lifetime_urgent = kpi.requests_lifetime_urgent / 3600
         lifetime_aim = kpi.aim_lifetime / 3600
-        url = "http://monitoring-dc.app.corp/tracking/activity?from="
+        url = "http://canuxcheng.com/tracking/activity?from="
         url += '%d-%d-%d' % (kpi.date.year, kpi.date.month, kpi.date.day)
 
         chart += '{date: new Date("%s"), remained: %d,remained_external: %d, '\
@@ -303,7 +303,7 @@ def chart_data_recurrents_alerts():
         if serv:
             serv += "@"
         chart_data_recurrents_alerts += '{name: "%s%s", repetitions: %d, date_last_alert: "%s", '\
-        'url: "http://monitoring-dc.app.corp/thruk/cgi-bin/status.cgi?host=%s"}' % (
+        'url: "http://canuxcheng.com/thruk/cgi-bin/status.cgi?host=%s"}' % (
             serv,
             alert.host,
             alert.frequency,
@@ -350,7 +350,7 @@ def chart_data_recurrents_alerts_week():
         if serv:
             serv += "@"
         chart_data_recurrents_alerts_week += '{name: "%s%s", repetitions: %d, date_last_alert:"%s", '\
-        'url: "http://monitoring-dc.app.corp/thruk/cgi-bin/status.cgi?host=%s"}' % (
+        'url: "http://canuxcheng.com/thruk/cgi-bin/status.cgi?host=%s"}' % (
             serv,
             alert.host,
             alert.frequency,
@@ -407,7 +407,7 @@ def chart_data_oldests_alerts():
             serv += "@"
         chart_data_oldests_alerts += \
             '{name: "%s%s", days: %d, date_error: "%s", ' \
-            'url: \"http://monitoring-dc.app.corp/thruk/cgi-bin/status.cgi?host=%s" , ' \
+            'url: \"http://canuxcheng.com/thruk/cgi-bin/status.cgi?host=%s" , ' \
             'color_graph: "%s"}' % (
                 serv,
                 alert.host,
